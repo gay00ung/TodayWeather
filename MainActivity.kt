@@ -41,10 +41,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var rain_tv : TextView
     lateinit var rainType_tv : TextView
 
-    var base_date = "20240329"
-    var base_time = "1400"
-    var nx = "0"
-    var ny = "0"
+    var base_date = "20240401"
+    var base_time = "0700"
+    var nx = "55"
+    var ny = "127"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,15 +74,16 @@ class MainActivity : AppCompatActivity() {
             base_date = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(cal.time)
         }
 
-        val call = ApiObject.retrofitService.getWeather("JSON", 10, 1, base_date, base_time, nx, ny)
+        val call = ApiObject.retrofitService.getWeather(1, 10000,"JSON", base_date, base_time, nx, ny)
 
         call.enqueue(object: retrofit2.Callback<WEATHER> {
             override fun onResponse(call: Call<WEATHER>, response: Response<WEATHER>) {
                 if(response.isSuccessful) {
 
-                    // TODO: response.body.items.item is null!!! NPE crash! FIX IT!
+                    // TODO: TMN, TMX, REH not appear & need to add function for auto date setting
                     val it: List<ITEM> = response.body()!!.response.body.items.item
-
+                    // step over -> execute next line
+                    // step into -> go to inside of method
                     var temp = ""
                     var tempMorning = ""
                     var tempDayTime = ""
@@ -93,7 +94,7 @@ class MainActivity : AppCompatActivity() {
 
                     for (i in 0..9) {
                         when (it[i].category) {
-                            "T3H" -> temp = it[i].fcstValue
+                            "TMP" -> temp = it[i].fcstValue
                             "TMN" -> tempMorning = it[i].fcstValue
                             "TMX" -> tempDayTime = it[i].fcstValue
                             "REH" -> humidity = it[i].fcstValue
@@ -114,11 +115,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
     fun setWeather(temp: String, tempMorning: String, tempDayTime: String, humidity: String, sky: String, rain: String, rainType: String) {
-        temp_tv.text = "$temp°"
+        temp_tv.text = "$temp°C"
 
-        tempMorning_tv.text = "$tempMorning°"
+        tempMorning_tv.text = "$tempMorning°C"
 
-        tempDayTime_tv.text = "$tempDayTime°"
+        tempDayTime_tv.text = "$tempDayTime°C"
 
         humidity_tv.text = "$humidity%"
 
@@ -130,7 +131,7 @@ class MainActivity : AppCompatActivity() {
             "4" -> skyResult = "흐림"
             else -> "Error"
         }
-        sky_tv.text = skyResult
+        sky_tv.text = skyResult // and you can stop here when resume
 
         rain_tv.text = "$rain%"
 
