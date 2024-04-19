@@ -11,8 +11,12 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
+import android.util.Log
+import java.time.LocalDate
+import java.time.LocalTime
 
 data class WEATHER (val response: RESPONSE)
 data class RESPONSE (val header: HEADER, val body: BODY)
@@ -41,8 +45,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var rain_tv : TextView
     lateinit var rainType_tv : TextView
 
-    var base_date = "20240401"
-    var base_time = "0700"
+//    var base_date = "20240401"
+//    var base_date = DateTimeFormatter.BASIC_ISO_DATE.toString()
+//    var base_time = DateTimeFormatter.ofPattern("HH").toString()
+    var base_date = LocalDate.now().toString()
+    var base_time = LocalTime.now().toString()
+//    var base_time = "0700"
     var nx = "55"
     var ny = "127"
 
@@ -65,6 +73,8 @@ class MainActivity : AppCompatActivity() {
     fun setWeather(nx: String, ny: String) {
         val cal = Calendar.getInstance()
         val time = SimpleDateFormat("HH", Locale.getDefault()).format(cal.time)
+
+        Log.d("base date : $base_date", "base time : $base_time")
 
         base_date = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(cal.time)
         base_time = getTime(time)
