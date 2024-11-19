@@ -1,5 +1,6 @@
 package com.example.todayweather
 
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,12 +12,16 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import java.time.LocalDate
 import java.time.LocalTime
+import android.Manifest
 
 data class WEATHER (val response: RESPONSE)
 data class RESPONSE (val header: HEADER, val body: BODY)
@@ -29,6 +34,9 @@ private val retrofit = Retrofit.Builder()
     .baseUrl("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/")
     .addConverterFactory(GsonConverterFactory.create())
     .build()
+
+private lateinit var fusedLocationClient: FusedLocationProviderClient
+private val LOCATION_PERMISSION_REQUEST_CODE = 1000
 
 object ApiObject {
     val retrofitService: WeatherInterface by lazy {
@@ -45,12 +53,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var rain_tv : TextView
     lateinit var rainType_tv : TextView
 
-//    var base_date = "20240401"
-//    var base_date = DateTimeFormatter.BASIC_ISO_DATE.toString()
-//    var base_time = DateTimeFormatter.ofPattern("HH").toString()
     var base_date = LocalDate.now().toString()
     var base_time = LocalTime.now().toString()
-//    var base_time = "0700"
     var nx = "55"
     var ny = "127"
 
@@ -59,6 +63,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        if (checkLocationPermission()) {
+            getLastLocation()
+        } else {
+            requestLocationPermission()
+        }
+
         temp_tv = findViewById(R.id.temp_tv)
         tempMorning_tv = findViewById(R.id.tempMorning_tv)
         tempDayTime_tv = findViewById(R.id.tempDayTime_tv)
@@ -66,8 +78,46 @@ class MainActivity : AppCompatActivity() {
         sky_tv = findViewById(R.id.sky_tv)
         rain_tv = findViewById(R.id.rain_tv)
         rainType_tv = findViewById(R.id.rainType_tv)
+    }
 
-        setWeather(nx, ny)
+    private fun checkLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+    }
+
+    private fun getLastLocation() {
+        if (checkLocationPermission()) {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        val gridCoordinate = convertToGrid(location.latitude, location.longitude)
+                        nx = gridCoordinate.first.toString()
+                        ny = gridCoordinate.second.toString()
+                        setWeather(nx, ny)
+                    }
+                }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation()
+            } else {
+                Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     fun setWeather(nx: String, ny: String) {
@@ -84,37 +134,34 @@ class MainActivity : AppCompatActivity() {
             base_date = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(cal.time)
         }
 
-        val call = ApiObject.retrofitService.getWeather(1, 10000,"JSON", base_date, base_time, nx, ny)
+        val call = ApiObject.retrofitService.getWeather(1, 10000, "JSON", base_date, base_time, nx, ny)
 
         call.enqueue(object: retrofit2.Callback<WEATHER> {
             override fun onResponse(call: Call<WEATHER>, response: Response<WEATHER>) {
                 if(response.isSuccessful) {
-
-                    // TODO: TMN, TMX, REH not appear & need to add function for auto date setting
                     val it: List<ITEM> = response.body()!!.response.body.items.item
-                    // step over -> execute next line
-                    // step into -> go to inside of method
                     var temp = ""
-                    var tempMorning = ""
+                    var tempMin = ""
                     var tempDayTime = ""
                     var humidity = ""
                     var sky = ""
                     var rain = ""
                     var rainType = ""
 
-                    for (i in 0..9) {
-                        when (it[i].category) {
-                            "TMP" -> temp = it[i].fcstValue
-                            "TMN" -> tempMorning = it[i].fcstValue
-                            "TMX" -> tempDayTime = it[i].fcstValue
-                            "REH" -> humidity = it[i].fcstValue
-                            "SKY" -> sky = it[i].fcstValue
-                            "POP" -> rain = it[i].fcstValue
-                            "PTY" -> rainType = it[i].fcstValue
+                    for (item in it) {
+                        when (item.category) {
+                            "TMP" -> temp = item.fcstValue
+                            "TMN" -> tempMin = item.fcstValue
+                            "TMX" -> tempDayTime = item.fcstValue
+                            "REH" -> humidity = item.fcstValue
+                            "SKY" -> sky = item.fcstValue
+                            "POP" -> rain = item.fcstValue
+                            "PTY" -> rainType = item.fcstValue
                             else -> continue
                         }
                     }
-                    setWeather(temp, tempMorning, tempDayTime, humidity, sky, rain, rainType)
+                    setWeather(temp, tempMin, tempDayTime, humidity, sky, rain, rainType)
+                    Log.d("API Response", response.body().toString())
                     Toast.makeText(applicationContext, it[0].fcstDate + ", " + it[0].fcstTime + "의 날씨 정보입니다.", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -141,7 +188,7 @@ class MainActivity : AppCompatActivity() {
             "4" -> skyResult = "흐림"
             else -> "Error"
         }
-        sky_tv.text = skyResult // and you can stop here when resume
+        sky_tv.text = skyResult
 
         rain_tv.text = "$rain%"
 
@@ -175,4 +222,41 @@ class MainActivity : AppCompatActivity() {
         }
         return result
     }
+}
+
+fun convertToGrid(lat: Double, lon: Double): Pair<Int, Int> {
+    val RE = 6371.00877 // 지구 반경(km)
+    val GRID = 5.0 // 격자 간격(km)
+    val SLAT1 = 30.0 // 투영 위도1(degree)
+    val SLAT2 = 60.0 // 투영 위도2(degree)
+    val OLON = 126.0 // 기준점 경도(degree)
+    val OLAT = 38.0 // 기준점 위도(degree)
+    val XO = 43 // 기준점 X좌표(GRID)
+    val YO = 136 // 기준점 Y좌표(GRID)
+
+    val DEGRAD = Math.PI / 180.0
+    val re = RE / GRID
+    val slat1 = SLAT1 * DEGRAD
+    val slat2 = SLAT2 * DEGRAD
+    val olon = OLON * DEGRAD
+    val olat = OLAT * DEGRAD
+
+    var sn = Math.tan(Math.PI * 0.25 + slat2 * 0.5) / Math.tan(Math.PI * 0.25 + slat1 * 0.5)
+    sn = Math.log(Math.cos(slat1) / Math.cos(slat2)) / Math.log(sn)
+    var sf = Math.tan(Math.PI * 0.25 + slat1 * 0.5)
+    sf = Math.pow(sf, sn) * Math.cos(slat1) / sn
+    var ro = Math.tan(Math.PI * 0.25 + olat * 0.5)
+    ro = re * sf / Math.pow(ro, sn)
+
+    var ra = Math.tan(Math.PI * 0.25 + (lat) * DEGRAD * 0.5)
+    ra = re * sf / Math.pow(ra, sn)
+    var theta = lon * DEGRAD - olon
+    if (theta > Math.PI) theta -= 2.0 * Math.PI
+    if (theta < -Math.PI) theta += 2.0 * Math.PI
+    theta *= sn
+
+    val x = Math.floor(ra * Math.sin(theta) + XO + 0.5).toInt()
+    val y = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5).toInt()
+
+    return Pair(x, y)
 }
