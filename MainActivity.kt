@@ -22,6 +22,8 @@ import com.google.android.gms.location.LocationServices
 import java.time.LocalDate
 import java.time.LocalTime
 import android.Manifest
+import android.os.Handler
+import android.os.Looper
 
 data class WEATHER (val response: RESPONSE)
 data class RESPONSE (val header: HEADER, val body: BODY)
@@ -53,6 +55,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var rain_tv : TextView
     lateinit var rainType_tv : TextView
 
+    lateinit var dateToday_tv: TextView
+    lateinit var timeNow_tv: TextView
+    val handler = Handler(Looper.getMainLooper())
+
     var base_date = LocalDate.now().toString()
     var base_time = LocalTime.now().toString()
     var nx = "55"
@@ -78,6 +84,31 @@ class MainActivity : AppCompatActivity() {
         sky_tv = findViewById(R.id.sky_tv)
         rain_tv = findViewById(R.id.rain_tv)
         rainType_tv = findViewById(R.id.rainType_tv)
+
+        // To show date and time
+        dateToday_tv = findViewById(R.id.dateToday)
+        timeNow_tv = findViewById(R.id.timeNow)
+
+        startUpdatingTime()
+    }
+
+    private fun startUpdatingTime() {
+        handler.post(object : Runnable {
+            override fun run() {
+                val currentDate = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault()).format(Calendar.getInstance().time)
+                val currentTime = SimpleDateFormat("HH시 mm분", Locale.getDefault()).format(Calendar.getInstance().time)
+
+                dateToday_tv.text = currentDate
+                timeNow_tv.text = currentTime
+
+                handler.postDelayed(this, 1000)
+            }
+        })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
     }
 
     private fun checkLocationPermission(): Boolean {
@@ -183,9 +214,9 @@ class MainActivity : AppCompatActivity() {
 
         var skyResult = ""
         when(sky) {
-            "1" -> skyResult = "맑음"
-            "3" -> skyResult = "구름 많음"
-            "4" -> skyResult = "흐림"
+            "1" -> skyResult = "맑음☀️"
+            "3" -> skyResult = "구름 많음⛅️"
+            "4" -> skyResult = "흐림☁️"
             else -> "Error"
         }
         sky_tv.text = skyResult
@@ -194,14 +225,14 @@ class MainActivity : AppCompatActivity() {
 
         var rainResult = ""
         when(rainType) {
-            "0" -> rainResult = "없음"
-            "1" -> rainResult = "비"
-            "2" -> rainResult = "비/눈"
-            "3" -> rainResult = "눈"
-            "4" -> rainResult = "소나기"
-            "5" -> rainResult = "빗방울"
-            "6" -> rainResult = "빗방울/눈날림"
-            "7" -> rainResult = "눈날림"
+            "0" -> rainResult = "❌"
+            "1" -> rainResult = "비☔️"
+            "2" -> rainResult = "비☔️/눈❄️"
+            "3" -> rainResult = "눈❄️"
+            "4" -> rainResult = "소나기🌧️"
+            "5" -> rainResult = "빗방울💧"
+            "6" -> rainResult = "빗방울💧/눈날림🌨️"
+            "7" -> rainResult = "눈날림🌨️"
             else -> "Error"
         }
         rainType_tv.text = rainResult
