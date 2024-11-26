@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
-    android:background="#f0f8ff">
+    android:background="@color/mainColor">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
-        android:text="☀️오늘의 날씨를 확인하세요!🌤️"
+        android:text="☀️ 오늘의 날씨를 확인하세요! 🌤️"
         android:textSize="30sp"
         android:maxLines="1"
         android:ellipsize="none"
@@ -81,6 +81,7 @@
                 android:paddingRight="25sp"
                 android:text="최저 기온 : "
                 android:textSize="25sp"
+                android:paddingTop="10sp"
                 android:fontFamily="@font/moneygraphy"/>
 
             <TextView
@@ -88,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
+                android:textColor="@android:color/holo_blue_dark"
                 android:fontFamily="@font/moneygraphy"/>
         </TableRow>
 
@@ -98,6 +100,7 @@
                 android:paddingRight="25sp"
                 android:text="최고 기온 : "
                 android:textSize="25sp"
+                android:paddingTop="10sp"
                 android:fontFamily="@font/moneygraphy"/>
 
             <TextView
@@ -105,6 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
+                android:textColor="@android:color/holo_red_light"
                 android:fontFamily="@font/moneygraphy"/>
         </TableRow>
 
@@ -115,6 +119,7 @@
                 android:paddingRight="25sp"
                 android:text="습도 : "
                 android:textSize="25sp"
+                android:paddingTop="10sp"
                 android:fontFamily="@font/moneygraphy"/>
 
             <TextView
@@ -132,6 +137,7 @@
                 android:paddingRight="25sp"
                 android:text="하늘 : "
                 android:textSize="25sp"
+                android:paddingTop="10sp"
                 android:fontFamily="@font/moneygraphy"/>
 
             <TextView
@@ -149,6 +155,7 @@
                 android:paddingRight="25sp"
                 android:text="강수 확률 : "
                 android:textSize="25sp"
+                android:paddingTop="10sp"
                 android:fontFamily="@font/moneygraphy"/>
 
             <TextView
@@ -166,6 +173,7 @@
                 android:paddingRight="25sp"
                 android:text="강수 형태 : "
                 android:textSize="25sp"
+                android:paddingTop="10sp"
                 android:fontFamily="@font/moneygraphy"/>
 
             <TextView
