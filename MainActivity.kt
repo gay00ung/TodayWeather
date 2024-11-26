@@ -214,9 +214,9 @@ class MainActivity : AppCompatActivity() {
 
         var skyResult = ""
         when(sky) {
-            "1" -> skyResult = "맑음☀️"
-            "3" -> skyResult = "구름 많음⛅️"
-            "4" -> skyResult = "흐림☁️"
+            "1" -> skyResult = "맑음 ☀️"
+            "3" -> skyResult = "구름 많음 ⛅️"
+            "4" -> skyResult = "흐림 ☁️"
             else -> "Error"
         }
         sky_tv.text = skyResult
@@ -226,13 +226,13 @@ class MainActivity : AppCompatActivity() {
         var rainResult = ""
         when(rainType) {
             "0" -> rainResult = "❌"
-            "1" -> rainResult = "비☔️"
-            "2" -> rainResult = "비☔️/눈❄️"
-            "3" -> rainResult = "눈❄️"
-            "4" -> rainResult = "소나기🌧️"
-            "5" -> rainResult = "빗방울💧"
-            "6" -> rainResult = "빗방울💧/눈날림🌨️"
-            "7" -> rainResult = "눈날림🌨️"
+            "1" -> rainResult = "비 ☔️"
+            "2" -> rainResult = "비 ☔️/눈 ❄️"
+            "3" -> rainResult = "눈 ❄️"
+            "4" -> rainResult = "소나기 🌧️"
+            "5" -> rainResult = "빗방울 💧"
+            "6" -> rainResult = "빗방울 💧/눈날림 🌨️"
+            "7" -> rainResult = "눈날림 🌨️"
             else -> "Error"
         }
         rainType_tv.text = rainResult
