@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="☀️Today Weather❄️"
-        android:fontFamily="@font/moneygraphy"
+        android:fontFamily="@font/nanumsquareneo3"
         android:textSize="30sp"
         android:maxLines="1"
         android:ellipsize="none"

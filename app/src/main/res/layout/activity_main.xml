@@ -8,6 +8,17 @@
     android:orientation="vertical"
     android:background="@color/mainColor">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
@@ -24,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:fontFamily="@font/moneygraphy"/>
+        android:fontFamily="@font/nanumsquareneo3"/>
 
 
     <TextView
@@ -36,7 +47,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:fontFamily="@font/moneygraphy"/>
+        android:fontFamily="@font/nanumsquareneo2"
+        android:maxLines="1"
+        android:ellipsize="none"
+        android:scrollHorizontally="true"
+        android:autoSizeTextType="uniform"/>
 
     <TextView
         android:id="@+id/timeNow"
@@ -47,15 +62,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:fontFamily="@font/moneygraphy"/>
+        android:fontFamily="@font/nanumsquareneo2"
+        android:maxLines="1"
+        android:ellipsize="none"
+        android:scrollHorizontally="true"
+        android:autoSizeTextType="uniform"/>
 
     <TableLayout
+        android:id="@+id/todayWeather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:maxLines="1"
+        android:ellipsize="none"
+        android:scrollHorizontally="true"
+        android:autoSizeTextType="uniform">
 
         <TableRow>
             <TextView
@@ -64,14 +88,14 @@
                 android:paddingRight="25sp"
                 android:text="현재 기온 : "
                 android:textSize="25sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
 
             <TextView
                 android:id="@+id/temp_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
         </TableRow>
 
         <TableRow>
@@ -82,7 +106,7 @@
                 android:text="최저 기온 : "
                 android:textSize="25sp"
                 android:paddingTop="10sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
 
             <TextView
                 android:id="@+id/tempMorning_tv"
@@ -90,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
                 android:textColor="@android:color/holo_blue_dark"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
         </TableRow>
 
         <TableRow>
@@ -101,7 +125,7 @@
                 android:text="최고 기온 : "
                 android:textSize="25sp"
                 android:paddingTop="10sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
 
             <TextView
                 android:id="@+id/tempDayTime_tv"
@@ -109,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
                 android:textColor="@android:color/holo_red_light"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
         </TableRow>
 
         <TableRow>
@@ -120,14 +144,14 @@
                 android:text="습도 : "
                 android:textSize="25sp"
                 android:paddingTop="10sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
 
             <TextView
                 android:id="@+id/humidity_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
         </TableRow>
 
         <TableRow>
@@ -138,14 +162,14 @@
                 android:text="하늘 : "
                 android:textSize="25sp"
                 android:paddingTop="10sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
 
             <TextView
                 android:id="@+id/sky_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
         </TableRow>
 
         <TableRow>
@@ -156,14 +180,14 @@
                 android:text="강수 확률 : "
                 android:textSize="25sp"
                 android:paddingTop="10sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
 
             <TextView
                 android:id="@+id/rain_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
         </TableRow>
 
         <TableRow>
@@ -174,7 +198,7 @@
                 android:text="강수 형태 : "
                 android:textSize="25sp"
                 android:paddingTop="10sp"
-                android:fontFamily="@font/moneygraphy"/>
+                android:fontFamily="@font/nanumsquareneo2"/>
 
             <TextView
                 android:id="@+id/rainType_tv"
@@ -183,6 +207,135 @@
                 android:textSize="25sp"
                 android:fontFamily="@font/moneygraphy"/>
         </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todayWeather"
+        android:orientation="vertical"
+        android:maxLines="1"
+        android:ellipsize="none"
+        android:scrollHorizontally="true"
+        android:autoSizeTextType="uniform">
+
+        <TableRow
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/day1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="1일"
+                android:textSize="13sp"
+                android:fontFamily="@font/nanumsquareneo2"
+                android:padding="10dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/day2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="2일"
+                android:textSize="13sp"
+                android:fontFamily="@font/nanumsquareneo2"
+                android:padding="10dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/day3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="3일"
+                android:textSize="13sp"
+                android:fontFamily="@font/nanumsquareneo2"
+                android:padding="10dp"
+                android:gravity="center"/>
+        </TableRow>
+
+        <TableRow
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/day1_min_max"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="최저/최고"
+                android:textSize="10sp"
+                android:fontFamily="@font/nanumsquareneo2"
+                android:padding="10dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/day2_min_max"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="최저/최고"
+                android:textSize="10sp"
+                android:fontFamily="@font/nanumsquareneo2"
+                android:padding="10dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/day3_min_max"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="최저/최고"
+                android:textSize="10sp"
+                android:fontFamily="@font/nanumsquareneo2"
+                android:padding="10dp"
+                android:gravity="center"/>
+        </TableRow>
+
+        <TableRow
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/day1_rainType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="1일 비"
+                android:textSize="13sp"
+                android:fontFamily="@font/moneygraphy"
+                android:padding="10dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/day2_rainType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="2일 비"
+                android:textSize="13sp"
+                android:fontFamily="@font/moneygraphy"
+                android:padding="10dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/day3_rainType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="3일 비"
+                android:textSize="13sp"
+                android:fontFamily="@font/moneygraphy"
+                android:padding="10dp"
+                android:gravity="center"/>
+        </TableRow>
+
     </TableLayout>
 
 
