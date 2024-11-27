@@ -24,6 +24,8 @@ import java.time.LocalTime
 import android.Manifest
 import android.os.Handler
 import android.os.Looper
+import android.view.View
+import android.widget.ProgressBar
 
 data class WEATHER (val response: RESPONSE)
 data class RESPONSE (val header: HEADER, val body: BODY)
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var sky_tv : TextView
     lateinit var rain_tv : TextView
     lateinit var rainType_tv : TextView
+    lateinit var progressBar: ProgressBar
 
     lateinit var dateToday_tv: TextView
     lateinit var timeNow_tv: TextView
@@ -61,6 +64,13 @@ class MainActivity : AppCompatActivity() {
 
     var base_date = LocalDate.now().toString()
     var base_time = LocalTime.now().toString()
+
+    var fcst_date = LocalDate.now().toString()
+    var fcst_time = LocalTime.now().toString()
+
+    val cal = Calendar.getInstance()
+    val time = SimpleDateFormat("HH", Locale.getDefault()).format(cal.time)
+
     var nx = "55"
     var ny = "127"
 
@@ -88,6 +98,9 @@ class MainActivity : AppCompatActivity() {
         // To show date and time
         dateToday_tv = findViewById(R.id.dateToday)
         timeNow_tv = findViewById(R.id.timeNow)
+
+        // progress bar
+        progressBar = findViewById(R.id.progressBar)
 
         startUpdatingTime()
     }
@@ -135,6 +148,7 @@ class MainActivity : AppCompatActivity() {
                         nx = gridCoordinate.first.toString()
                         ny = gridCoordinate.second.toString()
                         setWeather(nx, ny)
+                        setWeeklyWeather(nx, ny)
                     }
                 }
         }
@@ -152,8 +166,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setWeather(nx: String, ny: String) {
-        val cal = Calendar.getInstance()
-        val time = SimpleDateFormat("HH", Locale.getDefault()).format(cal.time)
 
         Log.d("base date : $base_date", "base time : $base_time")
 
@@ -165,10 +177,11 @@ class MainActivity : AppCompatActivity() {
             base_date = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(cal.time)
         }
 
-        val call = ApiObject.retrofitService.getWeather(1, 10000, "JSON", base_date, base_time, nx, ny)
+        val call = ApiObject.retrofitService.getWeather(1, 10000, "JSON", base_date, base_time, fcst_date, fcst_time, nx, ny)
 
         call.enqueue(object: retrofit2.Callback<WEATHER> {
             override fun onResponse(call: Call<WEATHER>, response: Response<WEATHER>) {
+                progressBar.visibility = ProgressBar.GONE
                 if(response.isSuccessful) {
                     val it: List<ITEM> = response.body()!!.response.body.items.item
                     var temp = ""
@@ -192,7 +205,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     setWeather(temp, tempMin, tempDayTime, humidity, sky, rain, rainType)
-                    Log.d("API Response", response.body().toString())
                     Toast.makeText(applicationContext, it[0].fcstDate + ", " + it[0].fcstTime + "의 날씨 정보입니다.", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -237,7 +249,96 @@ class MainActivity : AppCompatActivity() {
         }
         rainType_tv.text = rainResult
 
+        progressBar.visibility = ProgressBar.GONE
+
     }
+
+    fun setWeeklyWeather(nx: String, ny: String) {
+        progressBar.visibility = View.VISIBLE
+
+        base_date = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(cal.time)
+        base_time = "0200"
+
+        for (i in 0..2) {
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.DATE, i)
+            val fcstDate = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(cal.time)
+
+            val currentFcstDate = fcstDate
+            val currentIndex = i
+
+            val dayOfMonth = SimpleDateFormat("dd", Locale.getDefault()).format(cal.time)
+
+            val call =
+                ApiObject.retrofitService.getWeather(1, 10000, "JSON", base_date, base_time, fcst_date, fcst_time, nx, ny)
+
+            call.enqueue(object : retrofit2.Callback<WEATHER> {
+                override fun onResponse(call: Call<WEATHER>, response: Response<WEATHER>) {
+                    progressBar.visibility = ProgressBar.GONE
+                    if (response.isSuccessful) {
+                        val it: List<ITEM> = response.body()!!.response.body.items.item
+                        var tempMin = ""
+                        var tempMax = ""
+                        var rainType = ""
+                        val filteredItems = it.filter { it.fcstDate == currentFcstDate }
+
+                        for (item in filteredItems) {
+                            when (item.category) {
+                                "TMN" -> tempMin = item.fcstValue
+                                "TMX" -> tempMax = item.fcstValue
+                                "PTY" -> if (rainType.isEmpty()) rainType = item.fcstValue
+                                else -> continue
+                            }
+                        }
+                        updateUIForDay(currentIndex, dayOfMonth, tempMin, tempMax, rainType)
+                    }
+                }
+
+                override fun onFailure(call: Call<WEATHER>, t: Throwable) {
+                    Toast.makeText(applicationContext, "날씨 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT)
+                        .show()
+                    progressBar.visibility = ProgressBar.GONE
+                }
+            })
+        }
+    }
+
+    fun updateUIForDay(dayIndex: Int, date: String, tempMin: String, tempMax: String, rainType: String) {
+        var rainResult = ""
+        when(rainType) {
+            "0" -> rainResult = "❌"
+            "1" -> rainResult = "비 ☔️"
+            "2" -> rainResult = "비 ☔️/눈 ❄️"
+            "3" -> rainResult = "눈 ❄️"
+            "4" -> rainResult = "소나기 🌧️"
+            "5" -> rainResult = "빗방울 💧"
+            "6" -> rainResult = "빗방울 💧/눈날림 🌨️"
+            "7" -> rainResult = "눈날림 🌨️"
+            else -> "Error"
+        }
+
+        when (dayIndex) {
+            0 -> {
+                findViewById<TextView>(R.id.day1).text = "$date 일"
+                findViewById<TextView>(R.id.day1_min_max).text = "$tempMin°C / $tempMax°C"
+                findViewById<TextView>(R.id.day1_rainType).text = rainResult
+            }
+            1 -> {
+                findViewById<TextView>(R.id.day2).text = "$date 일"
+                findViewById<TextView>(R.id.day2_min_max).text = "$tempMin°C / $tempMax°C"
+                findViewById<TextView>(R.id.day2_rainType).text = rainResult
+            }
+            2 -> {
+                findViewById<TextView>(R.id.day3).text = "$date 일"
+                findViewById<TextView>(R.id.day3_min_max).text = "$tempMin°C / $tempMax°C"
+                findViewById<TextView>(R.id.day3_rainType).text = rainResult
+            }
+            else -> {
+                Log.d("Error", "Error")
+            }
+        }
+    }
+
 
     fun getTime(time : String) : String {
         var result = ""

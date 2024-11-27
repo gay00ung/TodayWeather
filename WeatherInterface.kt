@@ -12,6 +12,8 @@ interface WeatherInterface {
         @Query("dataType") dataType: String,
         @Query("base_date") base_date: String,
         @Query("base_time") base_time: String,
+        @Query("fcstDate") fcstDate: String,
+        @Query("fcstTime") fcstTime: String,
         @Query("nx") nx: String,
         @Query("ny") ny: String
     ): Call<WEATHER>
