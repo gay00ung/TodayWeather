@@ -1,5 +1,6 @@
-package com.example.todayweather
+package com.example.todayweather.network
 
+import com.example.todayweather.model.WEATHER
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
