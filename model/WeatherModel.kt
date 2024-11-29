@@ -1,4 +1,4 @@
-package com.example.todayweather.model
+package com.gurumi.weather.model
 
 data class WEATHER(val response: RESPONSE)
 

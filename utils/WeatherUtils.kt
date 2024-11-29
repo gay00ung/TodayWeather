@@ -1,13 +1,13 @@
-package com.example.todayweather.utils
+package com.gurumi.weather.utils
 
 import android.content.Context
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.example.todayweather.model.ITEM
-import com.example.todayweather.model.WEATHER
-import com.example.todayweather.network.WeatherInterface
+import com.gurumi.weather.model.ITEM
+import com.gurumi.weather.model.WEATHER
+import com.gurumi.weather.network.WeatherInterface
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

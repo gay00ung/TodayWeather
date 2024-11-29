@@ -1,4 +1,4 @@
-package com.example.todayweather.utils
+package com.gurumi.weather.utils
 
 import android.Manifest
 import android.content.Context

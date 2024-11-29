@@ -1,6 +1,6 @@
-package com.example.todayweather.network
+package com.gurumi.weather.network
 
-import com.example.todayweather.model.WEATHER
+import com.gurumi.weather.model.WEATHER
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

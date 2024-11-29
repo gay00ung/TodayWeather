@@ -1,4 +1,4 @@
-package com.example.todayweather.utils
+package com.gurumi.weather.utils
 
 object ConvertToGridUtils {
     fun convertToGrid(lat: Double, lon: Double): Pair<Int, Int> {

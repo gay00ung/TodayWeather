@@ -1,4 +1,4 @@
-package com.example.todayweather
+package com.gurumi.weather
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -16,11 +16,11 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.widget.ProgressBar
-import com.example.todayweather.utils.ConvertToGridUtils
-import com.example.todayweather.utils.LocationUtils.checkLocationPermission
-import com.example.todayweather.utils.LocationUtils.getLastLocation
-import com.example.todayweather.utils.LocationUtils.requestLocationPermission
-import com.example.todayweather.utils.WeatherUtils
+import com.gurumi.weather.utils.ConvertToGridUtils
+import com.gurumi.weather.utils.LocationUtils.checkLocationPermission
+import com.gurumi.weather.utils.LocationUtils.getLastLocation
+import com.gurumi.weather.utils.LocationUtils.requestLocationPermission
+import com.gurumi.weather.utils.WeatherUtils
 
 private lateinit var fusedLocationClient: FusedLocationProviderClient
 
