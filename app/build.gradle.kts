@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.todayweather"
+    namespace = "com.gurumi.weather"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.todayweather"
-        minSdk = 26
+        applicationId = "com.gurumi.weather"
+        minSdk = 24
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
